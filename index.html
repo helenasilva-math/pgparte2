@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full bg-slate-900 text-slate-100">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PG Quest: A Saga dos Padrões Multiplicativos</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .glass-card {
+      background: rgba(30, 41, 59, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.6);
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(99, 102, 241, 0.5);
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="h-full flex flex-col justify-between overflow-x-hidden">
+
+  <!-- Header Navigation -->
+  <header class="border-b border-slate-800 bg-slate-950/80 sticky top-0 z-50 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="bg-indigo-600 text-white p-2.5 rounded-xl shadow-lg shadow-indigo-500/30">
+          <i class="fa-solid me-0 fa-chart-line text-xl"></i>
+        </div>
+        <div>
+          <h1 class="font-extrabold text-lg text-white tracking-wide">PG QUEST</h1>
+          <p class="text-xs text-indigo-400 font-medium">Progressão Geométrica no Ensino Médio</p>
+        </div>
+      </div>
+
+      <!-- XP & Level Stats -->
+      <div class="flex items-center gap-4">
+        <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl px-4 py-1.5 flex items-center gap-3">
+          <div class="flex items-center gap-1.5 text-amber-400 font-bold text-sm">
+            <i class="fa-solid fa-star"></i>
+            <span id="score">0 XP</span>
+          </div>
+          <div class="h-4 w-px bg-slate-700"></div>
+          <div class="flex items-center gap-1.5 text-emerald-400 font-bold text-sm">
+            <i class="fa-solid fa-trophy"></i>
+            <span id="level">Nível 1</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+    <!-- Sidebar Menu -->
+    <aside class="lg:col-span-3 space-y-3">
+      <div class="glass-card rounded-2xl p-4 shadow-xl">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 px-3 mb-3">Módulos de Aprendizagem</h2>
+        <nav class="space-y-1.5">
+          <button onclick="switchTab('intro')" id="tab-intro" class="tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-sm transition-all bg-indigo-600 text-white shadow-lg shadow-indigo-600/20">
+            <i class="fa-solid fa-compass text-lg w-6"></i>
+            <span class="text-left">1. O Conceito e Razão ($q$)</span>
+          </button>
+          
+          <button onclick="switchTab('classificacao')" id="tab-classificacao" class="tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-sm text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition-all">
+            <i class="fa-solid fa-[#000] fa-diagram-project text-lg w-6"></i>
+            <span class="text-left">2. Classificação de P.G.</span>
+          </button>
+
+          <button onclick="switchTab('termo-geral')" id="tab-termo-geral" class="tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-sm text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition-all">
+            <i class="fa-solid fa-calculator text-lg w-6"></i>
+            <span class="text-left">3. Termo Geral ($a_n$)</span>
+          </button>
+
+          <button onclick="switchTab('soma')" id="tab-soma" class="tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-sm text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition-all">
+            <i class="fa-solid fa-sigma text-lg w-6"></i>
+            <span class="text-left">4. Soma dos Termos ($S_n$)</span>
+          </button>
+
+          <button onclick="switchTab('desafios')" id="tab-desafios" class="tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-sm text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition-all">
+            <i class="fa-solid fa-gamepad text-lg w-6 text-amber-400"></i>
+            <span class="text-left font-bold text-amber-300">Desafios Práticos</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Quick Formula Cheat Sheet -->
+      <div class="glass-card rounded-2xl p-4 border border-indigo-500/20 bg-indigo-950/20">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-indigo-300 mb-2 flex items-center gap-2">
+          <i class="fa-solid fa-bookmark"></i> Resumo de Fórmulas
+        </h3>
+        <ul class="text-xs space-y-2 text-slate-300">
+          <li class="bg-slate-800/80 p-2 rounded-lg">
+            <span class="text-indigo-400 font-semibold block">Razão:</span>
+            $q = \frac{a_2}{a_1} = \frac{a_n}{a_{n-1}}$
+          </li>
+          <li class="bg-slate-800/80 p-2 rounded-lg">
+            <span class="text-indigo-400 font-semibold block">Termo Geral:</span>
+            $a_n = a_1 \cdot q^{n-1}$
+          </li>
+          <li class="bg-slate-800/80 p-2 rounded-lg">
+            <span class="text-indigo-400 font-semibold block">Soma de $n$ termos:</span>
+            $S_n = \frac{a_1(q^n - 1)}{q - 1}$
+          </li>
+          <li class="bg-slate-800/80 p-2 rounded-lg">
+            <span class="text-indigo-400 font-semibold block">Propriedade:</span>
+            Se $(a, b, c)$ é P.G., então $b^2 = a \cdot c$
+          </li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <section class="lg:col-span-9 space-y-6">
+      
+      <!-- TAB 1: INTRODUÇÃO E CONCEITO -->
+      <div id="content-intro" class="tab-content space-y-6">
+        <!-- Story / Context Card -->
+        <div class="glass-card rounded-2xl p-6 relative overflow-hidden">
+          <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+          
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 mb-3">
+            <i class="fa-solid fa-globe"></i> Aplicação Real: Camada de Ozônio & Meia-Vida
+          </span>
+          <h2 class="text-2xl font-bold text-white mb-3">O que é uma Progressão Geométrica?</h2>
+          <p class="text-slate-300 text-sm leading-relaxed mb-4">
+            Uma <strong class="text-white font-semibold">Progressão Geométrica (P.G.)</strong> é uma sequência numérica onde cada termo, a partir do segundo, é obtido multiplicando o termo anterior por uma constante fixa $q$, chamada de <strong class="text-white font-semibold">razão</strong>.
+          </p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-4">
+            <div class="bg-slate-800/60 border border-slate-700/60 p-4 rounded-xl">
+              <h4 class="font-bold text-indigo-400 text-sm mb-1"><i class="fa-solid fa-leaf me-2"></i>Exemplo 1: Tratado de Montreal</h4>
+              <p class="text-xs text-slate-300">
+                A camada de ozônio vem se recuperando com a redução de CFCs. Suponha que a área afetada diminua por um fator de $0,7$ a cada década a partir de 27 milhões de km² em 2005:
+              </p>
+              <p class="text-xs font-mono text-amber-300 mt-2 bg-slate-900/60 p-2 rounded">
+                (27; 18,9; 13,23; 9,261...) &rarr; Razão $q = 0,7$
+              </p>
+            </div>
+
+            <div class="bg-slate-800/60 border border-slate-700/60 p-4 rounded-xl">
+              <h4 class="font-bold text-indigo-400 text-sm mb-1"><i class="fa-solid fa-vial me-2"></i>Exemplo 2: Decaimento do Iodo-131</h4>
+              <p class="text-xs text-slate-300">
+                A meia-vida do Iodo-131 é 8 dias. Uma amostra de 100g se reduz à metade ($\frac{m}{2}$) a cada período de 8 dias:
+              </p>
+              <p class="text-xs font-mono text-emerald-300 mt-2 bg-slate-900/60 p-2 rounded">
+                (100, 50, 25, 12.5, 6.25...) &rarr; Razão $q = 1/2 = 0,5$
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive Simulator: Gerador de P.G. -->
+        <div class="glass-card rounded-2xl p-6 border-indigo-500/30">
+          <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
+            <i class="fa-solid fa-sliders text-indigo-400"></i> Laboratório Interativo: Crie sua P.G.
+          </h3>
+          <p class="text-xs text-slate-400 mb-4">Ajuste o primeiro termo ($a_1$) e a razão ($q$) para ver a sequência ser construída passo a passo.</p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Primeiro Termo ($a_1$)</label>
+              <input type="number" id="sim-a1" value="3" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold focus:outline-none focus:border-indigo-500">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Razão ($q$)</label>
+              <input type="number" id="sim-q" value="2" step="0.5" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold focus:outline-none focus:border-indigo-500">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Número de Termos ($n$)</label>
+              <input type="number" id="sim-n" value="6" min="3" max="10" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold focus:outline-none focus:border-indigo-500">
+            </div>
+          </div>
+
+          <button onclick="generatePG()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 rounded-xl transition shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2">
+            <i class="fa-solid fa-play"></i> Gerar Sequência e Analisar
+          </button>
+
+          <!-- Result Display -->
+          <div id="pg-output" class="mt-6 hidden">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Resultado da Sequência:</h4>
+            <div id="pg-boxes" class="flex flex-wrap gap-2 mb-4"></div>
+            <div id="pg-analysis" class="p-3 bg-slate-800/80 rounded-xl border border-slate-700 text-xs text-slate-300"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: CLASSIFICAÇÃO -->
+      <div id="content-classificacao" class="tab-content space-y-6 hidden">
+        <div class="glass-card rounded-2xl p-6">
+          <h2 class="text-2xl font-bold text-white mb-2">Classificação de uma Progressão Geométrica</h2>
+          <p class="text-slate-300 text-sm mb-6">Dependendo do primeiro termo ($a_1$) e da razão ($q$), a P.G. pode ser classificada em 5 tipos principais:</p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div class="p-4 rounded-xl bg-slate-800/60 border border-emerald-500/30">
+              <span class="text-xs font-bold text-emerald-400 uppercase">1. Crescente</span>
+              <p class="text-xs text-slate-300 mt-1">Os termos aumentam. Ex: $(1, 2, 4, 8...)$ com $q=2$ ou $(-2, -1, -\frac{1}{2}...)$ com $q=\frac{1}{2}$.</p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-800/60 border border-blue-500/30">
+              <span class="text-xs font-bold text-blue-400 uppercase">2. Decrescente</span>
+              <p class="text-xs text-slate-300 mt-1">Os termos diminuem. Ex: $(12, 6, 3, \frac{3}{2}...)$ com $q=\frac{1}{2}$ ou $(-1, -3, -9...)$ com $q=3$.</p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-800/60 border border-amber-500/30">
+              <span class="text-xs font-bold text-amber-400 uppercase">3. Constante</span>
+              <p class="text-xs text-slate-300 mt-1">Todos os termos são iguais. Ocorre quando $q = 1$. Ex: $(6, 6, 6, 6...)$.</p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-800/60 border border-purple-500/30">
+              <span class="text-xs font-bold text-purple-400 uppercase">4. Oscilante / Quase Nula</span>
+              <p class="text-xs text-slate-300 mt-1">Os sinais se alternam ($q < 0$) ou os termos zeram a partir do 2º ($q = 0$). Ex: $(1, -2, 4, -8...)$ ou $(4, 0, 0, 0...)$.</p>
+            </div>
+          </div>
+
+          <!-- Quiz Game: Classifique a PG -->
+          <div class="bg-indigo-950/40 border border-indigo-500/30 rounded-2xl p-5">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="font-bold text-indigo-300 text-sm flex items-center gap-2">
+                <i class="fa-solid fa-gamepad"></i> Minijogo: Desafio da Classificação (11 Exercícios no Banco)
+              </h3>
+              <span id="class-streak" class="text-xs bg-indigo-500/20 text-indigo-300 px-2.5 py-1 rounded-full font-bold">Sequência: 0</span>
+            </div>
+
+            <div class="text-center py-6 bg-slate-900/80 rounded-xl border border-slate-800 mb-4">
+              <p class="text-xs text-slate-400 mb-1">Classifique a P.G. abaixo:</p>
+              <div id="class-seq-display" class="text-xl sm:text-2xl font-black text-amber-400 font-mono tracking-wider">
+                (-5, 10, -20, 40, -80...)
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <button onclick="checkClassification('Crescente')" class="bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold py-2.5 rounded-xl border border-slate-700 transition">Crescente</button>
+              <button onclick="checkClassification('Decrescente')" class="bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold py-2.5 rounded-xl border border-slate-700 transition">Decrescente</button>
+              <button onclick="checkClassification('Constante')" class="bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold py-2.5 rounded-xl border border-slate-700 transition">Constante</button>
+              <button onclick="checkClassification('Oscilante')" class="bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold py-2.5 rounded-xl border border-slate-700 transition">Oscilante</button>
+            </div>
+
+            <div id="class-feedback" class="mt-3 text-center text-xs font-bold hidden"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: TERMO GERAL -->
+      <div id="content-termo-geral" class="tab-content space-y-6 hidden">
+        <div class="glass-card rounded-2xl p-6">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 mb-3">
+            <i class="fa-solid fa-key"></i> Fórmula Fundamental
+          </span>
+          <h2 class="text-2xl font-bold text-white mb-2">Fórmula do Termo Geral (a<sub>n</sub>)</h2>
+          <p class="text-slate-300 text-sm mb-4">
+            Para encontrar qualquer termo de uma P.G. sem precisar calcular todos os anteriores, usamos a fórmula:
+          </p>
+
+          <div class="text-center py-4 bg-slate-900/90 rounded-2xl border border-indigo-500/40 my-4 shadow-inner">
+            <span class="text-3xl font-extrabold text-indigo-400 font-mono tracking-wider">a<sub>n</sub> = a<sub>1</sub> · q<sup>n-1</sup></span>
+            <div class="flex justify-center gap-6 text-xs text-slate-400 mt-3">
+              <span><b>a<sub>n</sub>:</b> Termo geral</span>
+              <span><b>a<sub>1</sub>:</b> 1º Termo</span>
+              <span><b>q:</b> Razão</span>
+              <span><b>n:</b> Posição (índice)</span>
+            </div>
+          </div>
+
+          <!-- Carrossel de Exercícios Interativos do Termo Geral -->
+          <div class="space-y-4 my-6">
+            <div class="flex items-center justify-between">
+              <h3 class="font-bold text-amber-300 text-sm flex items-center gap-2">
+                <i class="fa-solid fa-list-check"></i> Desafios Interativos de Termo Geral
+              </h3>
+              <div class="flex items-center gap-2">
+                <span class="text-xs text-slate-400 font-medium">Exercício <span id="tg-card-num" class="text-amber-400 font-bold">1</span> de 5</span>
+              </div>
+            </div>
+
+            <!-- Card Container -->
+            <div class="relative bg-slate-900/90 border border-slate-700/80 rounded-2xl p-6 shadow-xl min-h-[180px] flex flex-col justify-between">
+              
+              <!-- Card 1 -->
+              <div id="card-tg-1" class="card-tg-item space-y-3">
+                <span class="text-xs font-bold uppercase tracking-wider text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded-md border border-indigo-500/20">Exercício 1 — P.G. Decrescente</span>
+                <h4 class="font-bold text-slate-100 text-sm sm:text-base leading-snug">Determine o 13º termo da P.G. (64, 32, 16, ...)</h4>
+                <p class="text-xs text-slate-400">Qual é a razão $q$ e como aplicar na fórmula $a_{13} = a_1 \cdot q^{12}$?</p>
+                
+                <div class="pt-2">
+                  <button onclick="toggleSolution('sol-tg-1')" class="px-3.5 py-1.5 bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/40 text-indigo-200 text-xs font-semibold rounded-lg transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-eye"></i> <span id="btn-text-sol-tg-1">Ver Resolução</span>
+                  </button>
+                </div>
+                <div id="sol-tg-1" class="hidden pt-3 border-t border-slate-800">
+                  <p class="text-xs text-slate-300 font-mono bg-slate-950/80 p-3 rounded-lg border border-slate-800">
+                    $a_1 = 64, q = 1/2, n = 13 \implies a_{13} = 64 \cdot (1/2)^{12} = 2^6 \cdot \frac{1}{2^{12}} = \frac{1}{2^6} = \mathbf{1/64}$
+                  </p>
+                </div>
+              </div>
+
+              <!-- Card 2 -->
+              <div id="card-tg-2" class="card-tg-item space-y-3 hidden">
+                <span class="text-xs font-bold uppercase tracking-wider text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded-md border border-indigo-500/20">Exercício 2 — Fracionários</span>
+                <h4 class="font-bold text-slate-100 text-sm sm:text-base leading-snug">Determine o 14º termo da P.G. (1.536, 768, 384, 192, ...)</h4>
+                <p class="text-xs text-slate-400">Calcule o valor do termo final em forma de fração irredutível.</p>
+
+                <div class="pt-2">
+                  <button onclick="toggleSolution('sol-tg-2')" class="px-3.5 py-1.5 bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/40 text-indigo-200 text-xs font-semibold rounded-lg transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-eye"></i> <span id="btn-text-sol-tg-2">Ver Resolução</span>
+                  </button>
+                </div>
+                <div id="sol-tg-2" class="hidden pt-3 border-t border-slate-800">
+                  <p class="text-xs text-slate-300 font-mono bg-slate-950/80 p-3 rounded-lg border border-slate-800">
+                    $a_1 = 1536, q = 0,5, n = 14 \implies a_{14} = 1536 \cdot (1/2)^{13} = 3 \cdot 2^9 \cdot \frac{1}{2^{13}} = \frac{3}{2^4} = \mathbf{3/16}$
+                  </p>
+                </div>
+              </div>
+
+              <!-- Card 3 -->
+              <div id="card-tg-3" class="card-tg-item space-y-3 hidden">
+                <span class="text-xs font-bold uppercase tracking-wider text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded-md border border-indigo-500/20">Exercício 3 — Expressão Algébrica</span>
+                <h4 class="font-bold text-slate-100 text-sm sm:text-base leading-snug">Obtenha a expressão do n-ésimo termo da P.G. (3, 6, 12, 24, ...)</h4>
+                <p class="text-xs text-slate-400">Escreva a fórmula simplificada em função da variável $n$.</p>
+
+                <div class="pt-2">
+                  <button onclick="toggleSolution('sol-tg-3')" class="px-3.5 py-1.5 bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/40 text-indigo-200 text-xs font-semibold rounded-lg transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-eye"></i> <span id="btn-text-sol-tg-3">Ver Resolução</span>
+                  </button>
+                </div>
+                <div id="sol-tg-3" class="hidden pt-3 border-t border-slate-800">
+                  <p class="text-xs text-slate-300 font-mono bg-slate-950/80 p-3 rounded-lg border border-slate-800">
+                    $a_1 = 3, q = 2 \implies a_n = 3 \cdot 2^{n-1} \implies \mathbf{a_n = 3 \cdot 2^{n-1}}$
+                  </p>
+                </div>
+              </div>
+
+              <!-- Card 4 -->
+              <div id="card-tg-4" class="card-tg-item space-y-3 hidden">
+                <span class="text-xs font-bold uppercase tracking-wider text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded-md border border-indigo-500/20">Exercício 4 — Interpolação de Meios</span>
+                <h4 class="font-bold text-slate-100 text-sm sm:text-base leading-snug">Interpole 5 meios geométricos entre 1 e 64 nessa ordem.</h4>
+                <p class="text-xs text-slate-400">Dica: Ao incluir 5 meios entre 2 extremos, a sequência passará a ter 7 termos!</p>
+
+                <div class="pt-2">
+                  <button onclick="toggleSolution('sol-tg-4')" class="px-3.5 py-1.5 bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/40 text-indigo-200 text-xs font-semibold rounded-lg transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-eye"></i> <span id="btn-text-sol-tg-4">Ver Resolução</span>
+                  </button>
+                </div>
+                <div id="sol-tg-4" class="hidden pt-3 border-t border-slate-800">
+                  <p class="text-xs text-slate-300 font-mono bg-slate-950/80 p-3 rounded-lg border border-slate-800">
+                    $a_1 = 1, a_7 = 64 \implies a_7 = a_1 \cdot q^6 \implies 64 = 1 \cdot q^6 \implies q = \sqrt[6]{64} = \mathbf{\pm 2}$<br>
+                    • Para $q = 2$: P.G. $(1, 2, 4, 8, 16, 32, 64)$<br>
+                    • Para $q = -2$: P.G. $(1, -2, 4, -8, 16, -32, 64)$
+                  </p>
+                </div>
+              </div>
+
+              <!-- Card 5 -->
+              <div id="card-tg-5" class="card-tg-item space-y-3 hidden">
+                <span class="text-xs font-bold uppercase tracking-wider text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded-md border border-indigo-500/20">Exercício 5 — Aplicação Prática</span>
+                <h4 class="font-bold text-slate-100 text-sm sm:text-base leading-snug">Decaimento Radioativo (2022, 2023, 2024): Massas dadas por (4x - 60), (2x + 10) e (x + 41).</h4>
+                <p class="text-xs text-slate-400">Utilize a propriedade $b^2 = a \cdot c$ para encontrar o valor de $x$ e a massa inicial em 2022.</p>
+
+                <div class="pt-2">
+                  <button onclick="toggleSolution('sol-tg-5')" class="px-3.5 py-1.5 bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/40 text-indigo-200 text-xs font-semibold rounded-lg transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-eye"></i> <span id="btn-text-sol-tg-5">Ver Resolução</span>
+                  </button>
+                </div>
+                <div id="sol-tg-5" class="hidden pt-3 border-t border-slate-800">
+                  <p class="text-xs text-slate-300 font-mono bg-slate-950/80 p-3 rounded-lg border border-slate-800">
+                    Dados: $2022(4x-60)$, $2023(2x+10)$, $2024(x+41)$. Por $b^2 = a \cdot c$:<br>
+                    $(2x+10)^2 = (4x-60)(x+41) \implies 4x^2 + 40x + 100 = 4x^2 + 104x - 2460 \implies 64x = 2560 \implies \mathbf{x = 40}$<br>
+                    Massa em 2022 ($a_1$) = $4(40) - 60 = \mathbf{100g}$. Razão $q = \frac{2(40)+10}{100} = 0,9$.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Controls Navigation -->
+              <div class="flex items-center justify-between pt-4 mt-4 border-t border-slate-800">
+                <button onclick="changeTgCard(-1)" id="btn-tg-prev" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed text-xs font-semibold rounded-xl text-slate-300 transition flex items-center gap-2">
+                  <i class="fa-solid fa-chevron-left"></i> Anterior
+                </button>
+                <div id="tg-dots" class="flex gap-1.5">
+                  <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                  <span class="w-2.5 h-2.5 rounded-full bg-slate-700"></span>
+                  <span class="w-2.5 h-2.5 rounded-full bg-slate-700"></span>
+                  <span class="w-2.5 h-2.5 rounded-full bg-slate-700"></span>
+                  <span class="w-2.5 h-2.5 rounded-full bg-slate-700"></span>
+                </div>
+                <button onclick="changeTgCard(1)" id="btn-tg-next" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-xs font-semibold rounded-xl text-white transition flex items-center gap-2 shadow-lg shadow-indigo-600/30">
+                  Próximo <i class="fa-solid fa-chevron-right"></i>
+                </button>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Interactive Practice Calculator for Termo Geral -->
+          <div class="border border-indigo-500/30 rounded-xl p-4 bg-indigo-950/20">
+            <h4 class="font-bold text-white text-sm mb-3"><i class="fa-solid fa-calculator me-2 text-indigo-400"></i>Simulador de Termo Geral</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 mb-4">
+              <input type="number" id="calc-a1" placeholder="a1 (ex: 64)" class="bg-slate-800 border border-slate-700 rounded-lg p-2 text-xs text-white">
+              <input type="number" id="calc-q" placeholder="q (ex: 0.5)" step="any" class="bg-slate-800 border border-slate-700 rounded-lg p-2 text-xs text-white">
+              <input type="number" id="calc-n" placeholder="n (ex: 13)" class="bg-slate-800 border border-slate-700 rounded-lg p-2 text-xs text-white">
+              <button onclick="calculateAn()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-lg text-xs py-2">Calcular a<sub>n</sub></button>
+            </div>
+            <div id="calc-result" class="text-xs font-mono text-emerald-400 font-bold hidden bg-slate-900 p-3 rounded-lg"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: SOMA DOS TERMOS -->
+      <div id="content-soma" class="tab-content space-y-6 hidden">
+        <div class="glass-card rounded-2xl p-6">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mb-3">
+            <i class="fa-solid fa-coins"></i> Crescimento Exponencial
+          </span>
+          <h2 class="text-2xl font-bold text-white mb-2">Soma dos n Primeiros Termos (S<sub>n</sub>)</h2>
+          <p class="text-slate-300 text-sm mb-4">
+            Quando queremos somar todos os termos de uma P.G. até uma certa posição $n$, utilizamos a fórmula da soma finita:
+          </p>
+
+          <div class="text-center py-4 bg-slate-900/90 rounded-2xl border border-emerald-500/40 my-4 shadow-inner">
+            <span class="text-3xl font-extrabold text-emerald-400 font-mono tracking-wider">S<sub>n</sub> = <span class="inline-block text-center align-middle"><span class="block border-b border-emerald-400 px-2">a<sub>1</sub> · (q<sup>n</sup> - 1)</span><span class="block">q - 1</span></span></span>
+            <p class="text-xs text-slate-400 mt-3">(Para $q \neq 1$)</p>
+          </div>
+
+          <!-- Carrossel de Exercícios de Soma dos Termos -->
+          <div class="space-y-4 my-6">
+            <div class="flex items-center justify-between">
+              <h3 class="font-bold text-emerald-300 text-sm flex items-center gap-2">
+                <i class="fa-solid fa-sigma"></i> Desafios Interativos da Soma de P.G.
+              </h3>
+              <div class="flex items-center gap-2">
+                <span class="text-xs text-slate-400 font-medium">Exercício <span id="sm-card-num" class="text-emerald-400 font-bold">1</span> de 5</span>
+              </div>
+            </div>
+
+            <!-- Card Container -->
+            <div class="relative bg-slate-900/90 border border-slate-700/80 rounded-2xl p-6 shadow-xl min-h-[180px] flex flex-col justify-between">
+              
+              <!-- Card 1 -->
+              <div id="card-sm-1" class="card-sm-item space-y-3">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20">Exercício 1 — Soma Direta</span>
+                <h4 class="font-bold text-slate-100 text-sm sm:text-base leading-snug">Calcule a soma dos 10 primeiros termos da P.G. (3, 6, 12, 24, ...)</h4>
+                <p class="text-xs text-slate-400">Identifique $a_1 = 3$ e $q = 2$ e aplique na fórmula de $S_{10}$.</p>
+
+                <div class="pt-2">
+                  <button onclick="toggleSolution('sol-sm-1')" class="px-3.5 py-1.5 bg-amber-600/30 hover:bg-amber-600/50 border border-amber-500/40 text-amber-200 text-xs font-semibold rounded-lg transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-eye"></i> <span id="btn-text-sol-sm-1">Ver Resolução</span>
+                  </button>
+                </div>
+                <div id="sol-sm-1" class="hidden pt-3 border-t border-slate-800">
+                  <p class="text-xs font-mono bg-slate-950/80 p-3 rounded-lg border border-slate-800 text-slate-300">
+                    $a_1 = 3, q = 2, n = 10 \implies S_{10} = \frac{3 \cdot (2^{10} - 1)}{2 - 1} = 3 \cdot (1024 - 1) = 3 \cdot 1023 = \mathbf{3.069}$
+                  </p>
+                </div>
+              </div>
+
+              <!-- Card 2 -->
+              <div id="card-sm-2" class="card-sm-item space-y-3 hidden">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20">Exercício 2 — Aplicação Financeira</span>
+                <h4 class="font-bold text-slate-100 text-sm sm:text-base leading-snug">Uma empresa pagou um acumulado de R$ 46.410,00 em impostos.</h4>
+                <p class="text-xs text-slate-400">Sabendo que no 1º ano pagou R$ 10.000,00 e a cada ano o valor subiu 10% ($q = 1,1$), calcule o tempo $n$ de existência dessa empresa.</p>
+
+                <div class="pt-2">
+                  <button onclick="toggleSolution('sol-sm-2')" class="px-3.5 py-1.5 bg-amber-600/30 hover:bg-amber-600/50 border border-amber-500/40 text-amber-200 text-xs font-semibold rounded-lg transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-eye"></i> <span id="btn-text-sol-sm-2">Ver Resolução</span>
+                  </button>
+                </div>
+                <div id="sol-sm-2" class="hidden pt-3 border-t border-slate-800">
+                  <p class="text-xs font-mono bg-slate-950/80 p-3 rounded-lg border border-slate-800 text-slate-300">
+                    $a_1 = 10.000, q = 1,1, S_n = 46.410 \implies 46.410 = \frac{10.000(1,1^n - 1)}{0,1} \implies 1,1^n = 1,4641 = (1,1)^4 \implies \mathbf{n = 4 \text{ anos}}$
+                  </p>
+                </div>
+              </div>
+
+              <!-- Card 3 -->
+              <div id="card-sm-3" class="card-sm-item space-y-3 hidden">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20">Exercício 3 — Genealogia (Geração Direta)</span>
+                <h4 class="font-bold text-slate-100 text-sm sm:text-base leading-snug">Qual é o número de ascendentes diretos que formam especificamente a 20ª geração?</h4>
+                <p class="text-xs text-slate-400">Considere que 2 pais formam a 1ª geração anterior, 4 avós a 2ª, e assim por diante.</p>
+
+                <div class="pt-2">
+                  <button onclick="toggleSolution('sol-sm-3')" class="px-3.5 py-1.5 bg-amber-600/30 hover:bg-amber-600/50 border border-amber-500/40 text-amber-200 text-xs font-semibold rounded-lg transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-eye"></i> <span id="btn-text-sol-sm-3">Ver Resolução</span>
+                  </button>
+                </div>
+                <div id="sol-sm-3" class="hidden pt-3 border-t border-slate-800">
+                  <p class="text-xs font-mono bg-slate-950/80 p-3 rounded-lg border border-slate-800 text-slate-300">
+                    $a_{20}$ representa os ancestrais diretos na 20ª geração: $a_{20} = a_1 \cdot q^{19} = 2 \cdot 2^{19} = 2^{20} = \mathbf{1.048.576}$ pessoas!
+                  </p>
+                </div>
+              </div>
+
+              <!-- Card 4 -->
+              <div id="card-sm-4" class="card-sm-item space-y-3 hidden">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20">Exercício 4 — Genealogia (Soma Acumulada)</span>
+                <h4 class="font-bold text-slate-100 text-sm sm:text-base leading-snug">Qual é o número TOTAL de ascendentes acumulados até a 20ª geração?</h4>
+                <p class="text-xs text-slate-400">Aplique a fórmula da soma dos 20 termos: $S_{20}$.</p>
+
+                <div class="pt-2">
+                  <button onclick="toggleSolution('sol-sm-4')" class="px-3.5 py-1.5 bg-amber-600/30 hover:bg-amber-600/50 border border-amber-500/40 text-amber-200 text-xs font-semibold rounded-lg transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-eye"></i> <span id="btn-text-sol-sm-4">Ver Resolução</span>
+                  </button>
+                </div>
+                <div id="sol-sm-4" class="hidden pt-3 border-t border-slate-800">
+                  <p class="text-xs font-mono bg-slate-950/80 p-3 rounded-lg border border-slate-800 text-slate-300">
+                    $S_{20} = \frac{2 \cdot (2^{20} - 1)}{2 - 1} = 2 \cdot (1.048.576 - 1) = \mathbf{2.097.150 \text{ ancestrais acumulados}}$
+                  </p>
+                </div>
+              </div>
+
+              <!-- Card 5 -->
+              <div id="card-sm-5" class="card-sm-item space-y-3 hidden">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20">Exercício 5 — Desafio de Treinamento Esportivo</span>
+                <h4 class="font-bold text-slate-100 text-sm sm:text-base leading-snug">Um atleta nada em P.G. (25m no 1º dia, dobrando a cada dia) e corre em P.A. (1500m no 1º dia, +300m por dia).</h4>
+                <p class="text-xs text-slate-400">Sabendo que nadou um total de 3.175m nos $n$ dias de treino, determine quanto ele correu nesse mesmo período.</p>
+
+                <div class="pt-2">
+                  <button onclick="toggleSolution('sol-sm-5')" class="px-3.5 py-1.5 bg-amber-600/30 hover:bg-amber-600/50 border border-amber-500/40 text-amber-200 text-xs font-semibold rounded-lg transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-eye"></i> <span id="btn-text-sol-sm-5">Ver Resolução</span>
+                  </button>
+                </div>
+                <div id="sol-sm-5" class="hidden pt-3 border-t border-slate-800">
+                  <p class="text-xs font-mono bg-slate-950/80 p-3 rounded-lg border border-slate-800 text-slate-300">
+                    Natação (P.G. de $a_1 = 25, q = 2$): $S_n = 3175 \implies 25(2^n - 1) = 3175 \implies 2^n - 1 = 127 \implies 2^n = 128 \implies n = 7 \text{ dias}$.<br>
+                    Corrida (P.A. de $a_1 = 1500, r = 300$): $S_7 = \frac{(1500 + 3300) \cdot 7}{2} = \mathbf{16.800\text{ m}}$
+                  </p>
+                </div>
+              </div>
+
+              <!-- Controls Navigation -->
+              <div class="flex items-center justify-between pt-4 mt-4 border-t border-slate-800">
+                <button onclick="changeSmCard(-1)" id="btn-sm-prev" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed text-xs font-semibold rounded-xl text-slate-300 transition flex items-center gap-2">
+                  <i class="fa-solid fa-chevron-left"></i> Anterior
+                </button>
+                <div id="sm-dots" class="flex gap-1.5">
+                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                  <span class="w-2.5 h-2.5 rounded-full bg-slate-700"></span>
+                  <span class="w-2.5 h-2.5 rounded-full bg-slate-700"></span>
+                  <span class="w-2.5 h-2.5 rounded-full bg-slate-700"></span>
+                  <span class="w-2.5 h-2.5 rounded-full bg-slate-700"></span>
+                </div>
+                <button onclick="changeSmCard(1)" id="btn-sm-next" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-xs font-semibold rounded-xl text-white transition flex items-center gap-2 shadow-lg shadow-emerald-600/30">
+                  Próximo <i class="fa-solid fa-chevron-right"></i>
+                </button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 5: DESAFIOS PRÁTICOS (JOGO DE EXERCÍCIOS) -->
+      <div id="content-desafios" class="tab-content space-y-6 hidden">
+        <div class="glass-card rounded-2xl p-6 border-2 border-amber-500/30">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <div>
+              <span class="px-2.5 py-1 rounded-md text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                DESAFIO PRÁTICO
+              </span>
+              <h2 class="text-2xl font-bold text-white mt-1">Quiz Interativo de P.G.</h2>
+              <p class="text-xs text-slate-400">Exercícios extraídos e adaptados do livro didático!</p>
+            </div>
+            
+            <div class="flex items-center gap-2 bg-slate-900 px-4 py-2 rounded-xl border border-slate-800">
+              <i class="fa-solid fa-bullseye text-amber-400"></i>
+              <span class="text-xs text-slate-400">Questão <b id="quiz-progress-text" class="text-white">1</b> de <b id="quiz-total-text" class="text-white">10</b></span>
+            </div>
+          </div>
+
+          <!-- Quiz Box -->
+          <div id="quiz-container" class="space-y-6">
+            <!-- Question Card -->
+            <div class="bg-slate-900/90 rounded-2xl p-6 border border-slate-800 shadow-xl">
+              <h3 id="quiz-question-title" class="text-base font-bold text-amber-300 mb-2">Carregando questão...</h3>
+              <p id="quiz-question-desc" class="text-sm text-slate-300 mb-6 leading-relaxed"></p>
+
+              <!-- Answer Options -->
+              <div id="quiz-options" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <!-- Options injected by JS -->
+              </div>
+            </div>
+
+            <!-- Quiz Navigation -->
+            <div class="flex justify-between items-center pt-2">
+              <div id="quiz-feedback-msg" class="text-xs font-bold"></div>
+              <button id="next-btn" onclick="nextQuestion()" class="hidden bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-6 py-2.5 rounded-xl text-xs transition shadow-lg shadow-emerald-600/30 flex items-center gap-2">
+                Próxima Questão <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Quiz Complete Screen -->
+          <div id="quiz-summary" class="hidden text-center py-10 space-y-4">
+            <div class="w-20 h-20 bg-amber-500/20 text-amber-400 rounded-full flex items-center justify-center mx-auto text-3xl border border-amber-500/40">
+              <i class="fa-solid fa-trophy"></i>
+            </div>
+            <h3 class="text-2xl font-extrabold text-white">Parabéns! Você Concluiu o Quiz!</h3>
+            <p id="summary-text" class="text-slate-300 text-sm max-w-md mx-auto"></p>
+            <button onclick="resetQuiz()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-6 py-3 rounded-xl text-xs transition shadow-lg shadow-indigo-600/30">
+              Tentar Novamente
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-800 bg-slate-950 py-4 mt-8">
+    <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500">
+      <p>PG Quest — Recurso Didático Interativo de Matemática para o Ensino Médio</p>
+    </div>
+  </footer>
+
+  <!-- MathJax Configuration & Script -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <!-- Application Logic JS -->
+  <script>
+    // App State
+    let currentScore = 0;
+    let currentLevel = 1;
+    let currentStreak = 0;
+    let currentQuizIndex = 0;
+
+    // Termo Geral Carousel State
+    let currentTgCardIndex = 1;
+    const totalTgCards = 5;
+
+    // Soma dos Termos Carousel State
+    let currentSmCardIndex = 1;
+    const totalSmCards = 5;
+
+    function changeTgCard(direction) {
+      const newIndex = currentTgCardIndex + direction;
+      if (newIndex < 1 || newIndex > totalTgCards) return;
+
+      document.getElementById(`card-tg-${currentTgCardIndex}`).classList.add('hidden');
+      currentTgCardIndex = newIndex;
+      const nextCard = document.getElementById(`card-tg-${currentTgCardIndex}`);
+      nextCard.classList.remove('hidden');
+
+      // Update counter and buttons
+      document.getElementById('tg-card-num').innerText = currentTgCardIndex;
+      document.getElementById('btn-tg-prev').disabled = (currentTgCardIndex === 1);
+      document.getElementById('btn-tg-next').disabled = (currentTgCardIndex === totalTgCards);
+
+      // Update dots
+      const dots = document.querySelectorAll('#tg-dots span');
+      dots.forEach((dot, idx) => {
+        if (idx === currentTgCardIndex - 1) {
+          dot.className = "w-2.5 h-2.5 rounded-full bg-amber-400";
+        } else {
+          dot.className = "w-2.5 h-2.5 rounded-full bg-slate-700";
+        }
+      });
+
+      if (window.MathJax) {
+        MathJax.typesetPromise([nextCard]);
+      }
+    }
+
+    function changeSmCard(direction) {
+      const newIndex = currentSmCardIndex + direction;
+      if (newIndex < 1 || newIndex > totalSmCards) return;
+
+      document.getElementById(`card-sm-${currentSmCardIndex}`).classList.add('hidden');
+      currentSmCardIndex = newIndex;
+      const nextCard = document.getElementById(`card-sm-${currentSmCardIndex}`);
+      nextCard.classList.remove('hidden');
+
+      // Update counter and buttons
+      document.getElementById('sm-card-num').innerText = currentSmCardIndex;
+      document.getElementById('btn-sm-prev').disabled = (currentSmCardIndex === 1);
+      document.getElementById('btn-sm-next').disabled = (currentSmCardIndex === totalSmCards);
+
+      // Update dots
+      const dots = document.querySelectorAll('#sm-dots span');
+      dots.forEach((dot, idx) => {
+        if (idx === currentSmCardIndex - 1) {
+          dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-400";
+        } else {
+          dot.className = "w-2.5 h-2.5 rounded-full bg-slate-700";
+        }
+      });
+
+      if (window.MathJax) {
+        MathJax.typesetPromise([nextCard]);
+      }
+    }
+
+    // Classification Game State
+    const classQuestions = [
+      { seq: "(1, 3, 9, 27, 81)", type: "Crescente", q: 3 },
+      { seq: "(12, 6, 3, 1.5)", type: "Decrescente", q: 0.5 },
+      { seq: "(5, -10, 20, -40)", type: "Oscilante", q: -2 },
+      { seq: "(7, 7, 7, 7, 7)", type: "Constante", q: 1 },
+      { seq: "(-1, -3, -9, -27)", type: "Decrescente", q: 3 },
+      { seq: "(-8, -4, -2, -1)", type: "Crescente", q: 0.5 },
+      // 5 Novos Exercícios de Classificação
+      { seq: "(1/4, 1/2, 1, 2, 4)", type: "Crescente", q: 2 },
+      { seq: "(-1, 2, -4, 8, -16)", type: "Oscilante", q: -2 },
+      { seq: "(100, 50, 25, 12.5)", type: "Decrescente", q: 0.5 },
+      { seq: "(4, 0, 0, 0, 0)", type: "Oscilante", q: 0 },
+      { seq: "(-5, -5, -5, -5)", type: "Constante", q: 1 }
+    ];
+    let currentClassIndex = 0;
+
+    // Quiz Questions from Textbook Images (10 total - 5 origin + 5 novos)
+    const quizQuestions = [
+      {
+        title: "Questão 1: Razão da P.G. (Ex. 42)",
+        desc: "Estudos demográficos estimam que a população de uma cidade cresça 2% ao ano. Se a população forma uma P.G. ano a ano, qual é a razão ($q$) dessa progressão?",
+        options: [
+          { text: "q = 0,02", correct: false },
+          { text: "q = 1,02", correct: true },
+          { text: "q = 2", correct: false },
+          { text: "q = 1,2", correct: false }
+        ],
+        explanation: "Um crescimento de 2% significa multiplicar o valor por (1 + 0,02) = 1,02 a cada ano."
+      },
+      {
+        title: "Questão 2: Termo Geral da P.G. (Ex. 12)",
+        desc: "Determine o 13º termo da P.G. (64, 32, 16, ...).",
+        options: [
+          { text: "1/64", correct: true },
+          { text: "1/32", correct: false },
+          { text: "1/128", correct: false },
+          { text: "1/16", correct: false }
+        ],
+        explanation: "a1 = 64, q = 1/2. Pela fórmula a13 = 64 * (1/2)^12 = 2^6 / 2^12 = 1/2^6 = 1/64."
+      },
+      {
+        title: "Questão 3: Propriedade da P.G. (Ex. 17/54)",
+        desc: "Se a sequência (x, x + 2, 3x) é uma P.G. constante ou crescente, qual o valor de x?",
+        options: [
+          { text: "x = 4", correct: true },
+          { text: "x = 2", correct: false },
+          { text: "x = 3", correct: false },
+          { text: "x = 5", correct: false }
+        ],
+        explanation: "Pela propriedade b² = a * c: (x + 2)² = x * 3x => x² + 4x + 4 = 3x² => 2x² - 4x - 4 = 0... Ao resolver x = 4, a P.G. fica (3, 6, 12), que é crescente!"
+      },
+      {
+        title: "Questão 4: Soma dos Termos (Ex. 65)",
+        desc: "Considerando apenas a relação de paternidade (2 pais, 4 avós, 8 bisavós...), qual é a quantidade de ascendentes que uma pessoa tem na 3ª geração antecedente?",
+        options: [
+          { text: "6 ascendentes", correct: false },
+          { text: "8 ascendentes", correct: true },
+          { text: "16 ascendentes", correct: false },
+          { text: "14 ascendentes", correct: false }
+        ],
+        explanation: "Na 1ª geração = 2, 2ª = 4, 3ª geração = 8 bisavós (a3 = 2 * 2^(3-1) = 8)."
+      },
+      {
+        title: "Questão 5: Análise Demográfica (Enem / Ex. 41)",
+        desc: "O número de visitantes de uma festa triplica a cada dia. Se no 1º dia participaram 345 pessoas, qual a representação do número de visitantes no 4º dia?",
+        options: [
+          { text: "3 x 345", correct: false },
+          { text: "3³ x 345", correct: true },
+          { text: "(3 + 3 + 3) x 345", correct: false },
+          { text: "34 x 345", correct: false }
+        ],
+        explanation: "No 4º dia (n=4), a4 = a1 * q^(4-1) = 345 * 3³. Ou seja, 3³ x 345."
+      },
+      // 5 NOVOS EXERCÍCIOS ADICIONADOS AO QUIZ
+      {
+        title: "Questão 6: Interpolação de Meios (Ex. 48a)",
+        desc: "Ao interpolar 4 meios geométricos entre 1 e 3 nessa ordem, qual é o termo médio a3?",
+        options: [
+          { text: "√3", correct: true },
+          { text: "3", correct: false },
+          { text: "√2", correct: false },
+          { text: "9", correct: false }
+        ],
+        explanation: "Com 4 meios entre 1 e 3, a P.G. tem 6 termos. q^5 = 3 => q = 3^(1/5). Os termos são (1, 3^(1/5), 3^(2/5)=√3...)."
+      },
+      {
+        title: "Questão 7: Contaminação por Fungos (Ex. 52)",
+        desc: "A contaminação por fungos em eucaliptos começa com 100 árvores no 1º dia e dobra a cada 5 dias (100, 200, 400...). Quantas árvores estarão infectadas no 31º dia (n=7)?",
+        options: [
+          { text: "6.400 árvores", correct: true },
+          { text: "3.200 árvores", correct: false },
+          { text: "1.600 árvores", correct: false },
+          { text: "12.800 árvores", correct: false }
+        ],
+        explanation: "No 31º dia passaram 6 períodos de 5 dias (n=7). a7 = 100 * 2^6 = 100 * 64 = 6.400 árvores."
+      },
+      {
+        title: "Questão 8: Soma dos Termos de PG (Ex. 61a)",
+        desc: "Qual é a soma dos 10 primeiros termos da P.G. (3, 6, 12, 24, ...)?",
+        options: [
+          { text: "3.069", correct: true },
+          { text: "1.536", correct: false },
+          { text: "6.138", correct: false },
+          { text: "3.000", correct: false }
+        ],
+        explanation: "S10 = 3 * (2^10 - 1) / (2 - 1) = 3 * (1024 - 1) = 3 * 1023 = 3.069."
+      },
+      {
+        title: "Questão 9: Soma de 4 termos (Ex. 49 / Fuvest)",
+        desc: "Numa P.G. de 4 termos positivos, a soma dos dois primeiros é 1 e a soma dos dois últimos é 9. Qual é a razão da P.G.?",
+        options: [
+          { text: "q = 3", correct: true },
+          { text: "q = 2", correct: false },
+          { text: "q = 9", correct: false },
+          { text: "q = 1/3", correct: false }
+        ],
+        explanation: "a1(1+q) = 1 e a1*q²(1+q) = 9. Dividindo as equações: q² = 9 => q = 3 (pois os termos são positivos)."
+      },
+      {
+        title: "Questão 10: Cubos Fracionados (Ex. 50)",
+        desc: "Um cubo é dividido em 8 cubinhos iguais (fig 2). Depois cada cubinho é dividido em 8 cubinhos (fig 3). Quantos cubinhos compõem a figura 5?",
+        options: [
+          { text: "4.096 cubinhos", correct: true },
+          { text: "512 cubinhos", correct: false },
+          { text: "32.768 cubinhos", correct: false },
+          { text: "2.048 cubinhos", correct: false }
+        ],
+        explanation: "Os cubinhos seguem uma P.G. com a1 = 1 (fig 1), q = 8. Na fig 5 (n=5): a5 = 1 * 8^4 = 4.096."
+      }
+    ];
+
+    // Tab Navigation
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-lg', 'shadow-indigo-600/20');
+        btn.classList.add('text-slate-400', 'hover:bg-slate-800', 'hover:text-slate-200');
+      });
+
+      document.getElementById(`content-${tabId}`).classList.remove('hidden');
+      const activeBtn = document.getElementById(`tab-${tabId}`);
+      activeBtn.classList.add('bg-indigo-600', 'text-white', 'shadow-lg', 'shadow-indigo-600/20');
+      activeBtn.classList.remove('text-slate-400', 'hover:bg-slate-800', 'hover:text-slate-200');
+
+      if (window.MathJax) {
+        MathJax.typesetPromise();
+      }
+    }
+
+    // Gamification System
+    function addXP(amount) {
+      currentScore += amount;
+      document.getElementById('score').innerText = `${currentScore} XP`;
+      
+      const newLevel = Math.floor(currentScore / 100) + 1;
+      if (newLevel > currentLevel) {
+        currentLevel = newLevel;
+        document.getElementById('level').innerText = `Nível ${currentLevel}`;
+        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+      }
+    }
+
+    // Interactive Simulator Logic
+    function generatePG() {
+      const a1 = parseFloat(document.getElementById('sim-a1').value);
+      const q = parseFloat(document.getElementById('sim-q').value);
+      const n = parseInt(document.getElementById('sim-n').value);
+
+      if (isNaN(a1) || isNaN(q) || isNaN(n)) return;
+
+      const boxesContainer = document.getElementById('pg-boxes');
+      boxesContainer.innerHTML = '';
+      
+      let terms = [];
+      let currentTerm = a1;
+
+      for (let i = 0; i < n; i++) {
+        terms.push(Number(currentTerm.toFixed(2)));
+        
+        const box = document.createElement('div');
+        box.className = 'flex flex-col items-center bg-slate-900 border border-indigo-500/30 p-3 rounded-xl min-w-[70px] shadow';
+        box.innerHTML = `
+          <span class="text-[10px] text-slate-500 font-bold">a${i+1}</span>
+          <span class="text-sm font-bold text-indigo-300 font-mono">${Number(currentTerm.toFixed(2))}</span>
+        `;
+        boxesContainer.appendChild(box);
+
+        currentTerm *= q;
+      }
+
+      // Classification Analysis
+      let classification = "";
+      if (q < 0) classification = "Oscilante (os sinais variam)";
+      else if (q === 1) classification = "Constante (todos termos iguais)";
+      else if (q === 0) classification = "Quase Nula";
+      else if ((a1 > 0 && q > 1) || (a1 < 0 && q > 0 && q < 1)) classification = "Crescente";
+      else classification = "Decrescente";
+
+      const analysisEl = document.getElementById('pg-analysis');
+      analysisEl.innerHTML = `
+        <p><b>Classificação:</b> <span class="text-amber-300 font-bold">${classification}</span></p>
+        <p class="mt-1"><b>Fórmula do Termo Geral para esta P.G.:</b> <span class="font-mono text-emerald-400">a<sub>n</sub> = ${a1} · (${q})<sup>n-1</sup></span></p>
+      `;
+
+      document.getElementById('pg-output').classList.remove('hidden');
+      addXP(15);
+    }
+
+    // Classification Game Logic
+    function checkClassification(selectedType) {
+      const current = classQuestions[currentClassIndex];
+      const feedbackEl = document.getElementById('class-feedback');
+      feedbackEl.classList.remove('hidden', 'text-emerald-400', 'text-rose-400');
+
+      if (selectedType === current.type) {
+        currentStreak++;
+        feedbackEl.innerText = "✓ Correto! Excelente análise!";
+        feedbackEl.classList.add('text-emerald-400');
+        addXP(20);
+      } else {
+        currentStreak = 0;
+        feedbackEl.innerText = `✕ Incorreto. Esta P.G. é ${current.type} (razão q = ${current.q}).`;
+        feedbackEl.classList.add('text-rose-400');
+      }
+
+      document.getElementById('class-streak').innerText = `Sequência: ${currentStreak}`;
+
+      // Next question after short delay
+      setTimeout(() => {
+        currentClassIndex = (currentClassIndex + 1) % classQuestions.length;
+        document.getElementById('class-seq-display').innerText = classQuestions[currentClassIndex].seq;
+        feedbackEl.classList.add('hidden');
+      }, 1500);
+    }
+
+    // Termo Geral Calculator
+    function calculateAn() {
+      const a1 = parseFloat(document.getElementById('calc-a1').value);
+      const q = parseFloat(document.getElementById('calc-q').value);
+      const n = parseInt(document.getElementById('calc-n').value);
+
+      const resEl = document.getElementById('calc-result');
+      if (isNaN(a1) || isNaN(q) || isNaN(n)) {
+        resEl.classList.remove('hidden');
+        resEl.innerText = "Por favor, preencha todos os campos.";
+        return;
+      }
+
+      const an = a1 * Math.pow(q, n - 1);
+      resEl.classList.remove('hidden');
+      resEl.innerHTML = `Resultado: a<sub>${n}</sub> = ${a1} · (${q})<sup>${n-1}</sup> = <span class="text-amber-300">${an}</span>`;
+      addXP(10);
+    }
+
+    // Quiz System
+    function loadQuizQuestion() {
+      const q = quizQuestions[currentQuizIndex];
+      document.getElementById('quiz-progress-text').innerText = `${currentQuizIndex + 1}`;
+      document.getElementById('quiz-total-text').innerText = `${quizQuestions.length}`;
+      document.getElementById('quiz-question-title').innerText = q.title;
+      document.getElementById('quiz-question-desc').innerText = q.desc;
+      
+      const optionsContainer = document.getElementById('quiz-options');
+      optionsContainer.innerHTML = '';
+
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'w-full text-left bg-slate-800 hover:bg-slate-700/80 border border-slate-700 p-3.5 rounded-xl text-xs text-slate-200 font-semibold transition flex items-center justify-between group';
+        btn.innerHTML = `
+          <span>${opt.text}</span>
+          <i class="fa-regular fa-circle text-slate-500 group-hover:text-indigo-400"></i>
+        `;
+        btn.onclick = () => selectQuizOption(idx, btn);
+        optionsContainer.appendChild(btn);
+      });
+
+      document.getElementById('next-btn').classList.add('hidden');
+      document.getElementById('quiz-feedback-msg').innerText = '';
+
+      if (window.MathJax) {
+        MathJax.typesetPromise();
+      }
+    }
+
+    function selectQuizOption(selectedIndex, btnElement) {
+      const q = quizQuestions[currentQuizIndex];
+      const isCorrect = q.options[selectedIndex].correct;
+      const feedbackEl = document.getElementById('quiz-feedback-msg');
+
+      // Disable all buttons
+      const buttons = document.querySelectorAll('#quiz-options button');
+      buttons.forEach(b => b.disabled = true);
+
+      if (isCorrect) {
+        btnElement.classList.add('bg-emerald-950/80', 'border-emerald-500', 'text-emerald-200');
+        feedbackEl.className = "text-xs font-bold text-emerald-400";
+        feedbackEl.innerText = `✓ Correto! ${q.explanation}`;
+        addXP(30);
+      } else {
+        btnElement.classList.add('bg-rose-950/80', 'border-rose-500', 'text-rose-200');
+        feedbackEl.className = "text-xs font-bold text-rose-400";
+        feedbackEl.innerText = `✕ Ops! ${q.explanation}`;
+      }
+
+      document.getElementById('next-btn').classList.remove('hidden');
+    }
+
+    function nextQuestion() {
+      currentQuizIndex++;
+      if (currentQuizIndex < quizQuestions.length) {
+        loadQuizQuestion();
+      } else {
+        showQuizSummary();
+      }
+    }
+
+    function showQuizSummary() {
+      document.getElementById('quiz-container').classList.add('hidden');
+      document.getElementById('quiz-summary').classList.remove('hidden');
+      document.getElementById('summary-text').innerText = `Você concluiu todas as questões e acumulou XP para evoluir no domínio das Progressões Geométricas!`;
+      confetti({ particleCount: 150, spread: 80, origin: { y: 0.5 } });
+    }
+
+    function resetQuiz() {
+      currentQuizIndex = 0;
+      document.getElementById('quiz-summary').classList.add('hidden');
+      document.getElementById('quiz-container').classList.remove('hidden');
+      loadQuizQuestion();
+    }
+
+    // Toggle Solution Visibility
+    function toggleSolution(id) {
+      const container = document.getElementById(id);
+      const textBtn = document.getElementById(`btn-text-${id}`);
+      
+      if (container.classList.contains('hidden')) {
+        container.classList.remove('hidden');
+        if (textBtn) textBtn.innerText = 'Ocultar Resolução';
+        if (window.MathJax) {
+          MathJax.typesetPromise([container]);
+        }
+      } else {
+        container.classList.add('hidden');
+        if (textBtn) textBtn.innerText = 'Ver Resolução';
+      }
+    }
+
+    // Initialize Page
+    window.onload = function() {
+      generatePG();
+      loadQuizQuestion();
+      changeTgCard(0);
+      changeSmCard(0);
+    };
+  </script>
+</body>
+</html>
